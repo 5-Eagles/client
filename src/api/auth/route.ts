@@ -7,44 +7,33 @@ import { createClient } from '@/utils/supabase/server';
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get('email') as string | null;
-  const password = formData.get('password') as string | null;
-  const name = formData.get('name') as string | null;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const name = formData.get('name') as string;
 
-  // Input validation
-  if (!email || !password || !name) {
-    console.error('Missing required fields');
-    redirect('/error?message=Missing%20required%20fields');
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name,
+        },
+      },
+    });
+
+    if (error) {
+      console.error('Signup error:', error);
+      return { error: error.message };
+    }
+
+    console.log('Signup successful:', data);
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (error) {
+    console.error('Error details:', error);
+    return { error: error.message };
   }
-
-  // Sign up the user with email and password
-  const { data: authResponse, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (authError || !authResponse.user) {
-    console.error('Sign-up error:', authError?.message);
-    redirect(
-      `/error?message=${encodeURIComponent(authError?.message || 'Sign-up failed')}`
-    );
-  }
-
-  // Save additional user data
-  const { error: dbError } = await supabase.from('users').insert({
-    email,
-    name,
-  });
-
-  if (dbError) {
-    console.error('Database error:', dbError.message);
-    redirect(
-      `/error?message=${encodeURIComponent(dbError.message || 'Failed to save user data')}`
-    );
-  }
-
-  // Redirect to home after successful signup
-  redirect('/');
 }
 
 export async function login(formData: FormData) {

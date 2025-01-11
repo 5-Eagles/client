@@ -5,6 +5,7 @@ import { IoArrowBack } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { BiLoaderAlt } from 'react-icons/bi';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 const convertToKoreanAmount = (amount: string): string => {
   let num = parseInt(amount);
@@ -26,17 +27,35 @@ const convertToKoreanAmount = (amount: string): string => {
   return result.trim() + '원';
 };
 
+const getCreditGrade = (score: number): string => {
+  if (score >= 900) return '1등급';
+  if (score >= 870) return '2등급';
+  if (score >= 840) return '3등급';
+  if (score >= 805) return '4등급';
+  if (score >= 750) return '5등급';
+  if (score >= 665) return '6등급';
+  if (score >= 600) return '7등급';
+  return '비적격';
+};
+
 export default function LoanApplicationForm() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase: SupabaseClient = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     loan_amnt: '',
     term: 36,
     credit_score: '',
-    grade: 7,
+    grade: 3,
     annual_inc: '',
     purpose: 'debt_consolidation',
+    emp_length: 1,
+    dti: 35.5,
+    delinq_2yrs: 0,
+    open_acc: 3,
+    pub_rec: 0,
+    total_acc: 5,
+    home_ownership: 'RENT',
   });
 
   const [result, setResult] = useState<{
@@ -46,56 +65,126 @@ export default function LoanApplicationForm() {
     approval_status: string;
   } | null>(null);
 
+  const testSupabaseConnection = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Supabase 인증 에러:', error);
+        return false;
+      }
+      console.log('Supabase 연결 정보:', {
+        accessToken: !!data.session?.access_token,
+        user: data.session?.user,
+      });
+      return true;
+    } catch (err) {
+      console.error('Supabase 연결 테스트 실패:', err);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // 1. 서버 API 호출하여 이자율 및 신용등급 계산
+      // 1. 세션 확인
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+      console.log('1. 현재 로그인 정보:', {
+        userId: user?.id,
+        userEmail: user?.email,
+        isLoggedIn: !!user,
+      });
+
+      if (!user) {
+        throw new Error('로그인이 필요합니다');
+      }
+
+      // 2. 현재 users 테이블 데이터 확인 - single() 제거
+      const { data: currentUser, error: fetchError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id);
+
+      console.log('2. 현재 DB 데이터:', {
+        found: currentUser && currentUser.length > 0,
+        userData: currentUser?.[0],
+      });
+
+      // API 요청 데이터 확인
+      const requestData = {
+        loan_amnt: Number(formData.loan_amnt),
+        term: formData.term,
+        grade: formData.grade,
+        emp_length: formData.emp_length,
+        annual_inc: Number(formData.annual_inc),
+        dti: formData.dti,
+        delinq_2yrs: formData.delinq_2yrs,
+        open_acc: formData.open_acc,
+        pub_rec: formData.pub_rec,
+        total_acc: formData.total_acc,
+        purpose: formData.purpose,
+        home_ownership: formData.home_ownership,
+      };
+      console.log('API 요청 데이터:', requestData);
+
+      // 3. API 호출
       const response = await fetch(
-        'http://3.83.160.148:8000/predict/interest_rate',
+        'http://localhost:8000/predict/interest_rate',
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            loan_amnt: Number(formData.loan_amnt),
-            term: formData.term,
-            credit_score: Number(formData.credit_score),
-            annual_inc: Number(formData.annual_inc),
-            purpose: formData.purpose,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestData),
         }
       );
 
       const apiResult = await response.json();
+      console.log('API 응답 결과:', apiResult);
 
-      // 2. Supabase에 데이터 저장
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      // 4. loan_evaluations 테이블에 저장
+      const { data: insertResult, error: insertError } = await supabase
+        .from('loan_evaluations')
+        .insert([
+          {
+            user_id: user.id,
+            loan_amount: Number(formData.loan_amnt),
+            term: formData.term,
+            annual_income: Number(formData.annual_inc),
+            interest_rate: apiResult.interest_rate,
+            credit_grade: apiResult.credit_grade,
+            approval_status: apiResult.approval_status,
+            created_at: new Date().toISOString(),
+            // 추가 정보 저장
+            emp_length: formData.emp_length,
+            dti: formData.dti,
+            delinq_2yrs: formData.delinq_2yrs,
+            open_acc: formData.open_acc,
+            pub_rec: formData.pub_rec,
+            total_acc: formData.total_acc,
+            purpose: formData.purpose,
+            home_ownership: formData.home_ownership,
+            credit_score: formData.credit_score,
+          },
+        ]);
 
-      if (!user) throw new Error('로그인이 필요합니다');
-
-      const { error } = await supabase.from('loan_applications').insert({
-        user_id: user.id,
-        loan_amount: Number(formData.loan_amnt),
-        term: formData.term,
-        credit_score: Number(formData.credit_score),
-        annual_income: Number(formData.annual_inc),
-        purpose: formData.purpose,
-        interest_rate: apiResult.interest_rate,
-        credit_grade: apiResult.credit_grade,
-        status: apiResult.approval_status.toLowerCase(),
+      console.log('Supabase 저장 결과:', {
+        성공: !insertError,
+        에러: insertError,
+        데이터: insertResult,
       });
 
-      if (error) throw error;
+      if (insertError) {
+        throw insertError;
+      }
 
       setResult(apiResult);
+      alert('대출 신청이 완료되었습니다.');
     } catch (error) {
-      console.error('Error:', error);
-      alert('오류가 발생했습니다. 다시 시도해주세요.');
+      console.error('전체 에러:', error);
+      alert(error.message || '데이터 저장 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -138,6 +227,15 @@ export default function LoanApplicationForm() {
               max='1000'
               required
             />
+            {formData.credit_score && (
+              <p
+                className={`text-sm ${Number(formData.credit_score) < 600 ? 'text-red-500' : 'text-gray-600'}`}
+              >
+                {Number(formData.credit_score) < 600
+                  ? '신용점수가 600점 미만인 경우 대출 신청이 불가능합니다.'
+                  : `신용등급: ${getCreditGrade(Number(formData.credit_score))}`}
+              </p>
+            )}
           </div>
 
           {/* 대출 정보 입력 폼 */}
@@ -190,6 +288,30 @@ export default function LoanApplicationForm() {
               </select>
             </div>
 
+            {/* 근무기간 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                근무기간
+              </label>
+              <select
+                value={formData.emp_length}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    emp_length: Number(e.target.value),
+                  })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+              >
+                <option value={0}>경력 없음</option>
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((year) => (
+                  <option key={year} value={year}>
+                    {year}년
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* 연소득 */}
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-gray-700'>
@@ -218,6 +340,98 @@ export default function LoanApplicationForm() {
               )}
             </div>
 
+            {/* 부채비율 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                부채비율 (%)
+              </label>
+              <input
+                type='number'
+                value={formData.dti}
+                onChange={(e) =>
+                  setFormData({ ...formData, dti: Number(e.target.value) })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+                min='0'
+                max='50'
+                step='0.1'
+              />
+            </div>
+
+            {/* 2년내 연체횟수 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                2년내 연체횟수
+              </label>
+              <input
+                type='number'
+                value={formData.delinq_2yrs}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    delinq_2yrs: Number(e.target.value),
+                  })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+                min='0'
+                max='10'
+              />
+            </div>
+
+            {/* 개설 계좌수 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                개설 계좌수
+              </label>
+              <input
+                type='number'
+                value={formData.open_acc}
+                onChange={(e) =>
+                  setFormData({ ...formData, open_acc: Number(e.target.value) })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+                min='0'
+                max='40'
+              />
+            </div>
+
+            {/* 공공기록수 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                전과기록수
+              </label>
+              <input
+                type='number'
+                value={formData.pub_rec}
+                onChange={(e) =>
+                  setFormData({ ...formData, pub_rec: Number(e.target.value) })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+                min='0'
+                max='10'
+              />
+            </div>
+
+            {/* 총 계좌수 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                총 계좌수
+              </label>
+              <input
+                type='number'
+                value={formData.total_acc}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    total_acc: Number(e.target.value),
+                  })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+                min='0'
+                max='80'
+              />
+            </div>
+
             {/* 대출목적 */}
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-gray-700'>
@@ -243,6 +457,25 @@ export default function LoanApplicationForm() {
                 <option value='wedding'>결혼</option>
                 <option value='educational'>교육</option>
                 <option value='other'>기타</option>
+              </select>
+            </div>
+
+            {/* 주거상태 */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                주거상태
+              </label>
+              <select
+                value={formData.home_ownership}
+                onChange={(e) =>
+                  setFormData({ ...formData, home_ownership: e.target.value })
+                }
+                className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary'
+              >
+                <option value='RENT'>임대</option>
+                <option value='MORTGAGE'>주택담보대출</option>
+                <option value='OWN'>자가</option>
+                <option value='OTHER'>기타</option>
               </select>
             </div>
           </div>
