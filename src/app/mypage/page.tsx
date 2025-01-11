@@ -1,24 +1,44 @@
 import LoanSummaryCard from '@/components/loan_summary_card';
+import BottomNav from '@/components/BottomNav';
+import BadgeButton from '@/components/button/badgeButton';
+import CardButton from '@/components/button/cardButton';
+import Link from 'next/link';
 
 export default function MyPage() {
   return (
+    <>
+    <h1 className="text-xl text-center font-bold">내 계좌</h1>
     <div className="w-full max-w-md mx-auto p-4 space-y-4">
-      <h1 className="text-xl font-bold">내 계좌</h1>
+    
       
-      <LoanSummaryCard
-        title="위험등급C"
-        status="모집중"
-        amount={2000000}
-        badge="달성"
-        stats={[
-          { label: "수익률", value: "10.9%", color: "text-primary" },
-          { label: "투자 기간", value: "12개월" },
-          { label: "모집률", value: "45.50%" }
-        ]}
-        progressAmount={1400600}
-        targetAmount={2000000}
-        href="/loan-details"
-      />
+    <div className="bg-gray-100 rounded-2xl mx-4">
+     
+          <div className="pl-4 pt-4">
+            <p className="text-sm text-gray-600">총 평가 금액</p>
+            <p className="text-3xl font-bold">43,539,446원</p>
+          </div>
+          <Link href="/mypage/transfer">
+          <CardButton className="pb-2">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-600">보유 머니</p>
+                <p className="text-xl font-semibold">2,350,000원</p>
+              </div>
+             
+                <BadgeButton
+                  backgroundColor="bg-primary"
+                  textColor="text-white"
+                >
+                  입출금하기
+                </BadgeButton>
+             
+            </div>
+          </CardButton>
+          </Link>
+       
+      </div>
+      
+    
       
       <LoanSummaryCard
         title="빌린 돈"
@@ -36,7 +56,7 @@ export default function MyPage() {
       />
 
       <LoanSummaryCard
-        title="받아준 돈"
+        title="빌려준 돈"
         status="더보기"
         amount={43539446}
         badge="달성"
@@ -49,6 +69,12 @@ export default function MyPage() {
         targetAmount={3000000}
         href="/lent"
       />
-    </div>
+      
+       </div>
+      <BottomNav />
+    </>
+
+      
+   
   );
 }

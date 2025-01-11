@@ -1,20 +1,26 @@
-import { Geist } from 'next/font/google';
+import { Geist, Passion_One } from 'next/font/google';
 import './globals.css';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000';
 
+const geistSans = Geist({
+  display: 'swap',
+  subsets: ['latin'],
+});
+
+const passionOne = Passion_One({
+  weight: ['400', '700', '900'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: '5-Eagles',
   description: '',
 };
-
-const geistSans = Geist({
-  display: 'swap',
-  subsets: ['latin'],
-});
 
 export default function RootLayout({
   children,
@@ -30,7 +36,8 @@ export default function RootLayout({
     >
       <body className='bg-background text-foreground'>
         <main className='min-h-screen flex flex-col items-center'>
-          {children}
+          <div className='mt-5'/>
+            {children}
         </main>
       </body>
     </html>
