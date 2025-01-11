@@ -10,7 +10,6 @@ export default {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        'card-bg': '#F5F6F7',
       },
     },
   },
@@ -24,7 +23,8 @@ export default {
           secondary: "#7c3aed",
           accent: "#37cdbe",
           neutral: "#3d4451",
-          "base-100": "#ffffff", 
+          "base-100": "#ffffff",
+          "card-bg": "#F5F6F7",
         },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
@@ -33,6 +33,7 @@ export default {
           accent: "#37cdbe",
           neutral: "#3d4451",
           "base-100": "#1f2937",
+          "card-bg": "#1a1d24",
         },
       },
     ],

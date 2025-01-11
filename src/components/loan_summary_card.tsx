@@ -24,9 +24,9 @@ export default function LoanSummaryCard({
   href,
 }: LoanSummaryProps) {
   return (
-    <Link href={href}>
-      <div className="card shadow-xl active:scale-95 active:brightness-95 transition-all duration-200 cursor-pointer overflow-hidden">
-        <div className="bg-white p-4">
+    <Link href={href} className="block m-4">
+      <div className="btn btn-ghost h-auto p-0 w-full normal-case bg-card-bg shadow-lg rounded-2xl overflow-hidden hover:scale-105 transition-all duration-200">
+        <div className="bg-base-100 rounded-2xl p-4 w-full">
           <div className="flex justify-between items-center">
             <span className="text-base-content/80">{title}</span>
             {status && <span className="text-primary">{status}</span>}
@@ -35,10 +35,8 @@ export default function LoanSummaryCard({
           <p className="text-2xl font-bold text-right mt-2 text-base-content">
             {amount.toLocaleString()} 원
           </p>
-        </div>
 
-        <div className="bg-card-bg p-4">
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between text-sm mt-4">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <p className="text-base-content/80 mb-1">{stat.label}</p>
