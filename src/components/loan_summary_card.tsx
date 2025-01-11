@@ -12,6 +12,7 @@ interface LoanSummaryProps {
   progressAmount: number;
   targetAmount: number;
   href: string;
+  badge?: string;
 }
 
 export default function LoanSummaryCard({
@@ -22,11 +23,12 @@ export default function LoanSummaryCard({
   progressAmount,
   targetAmount,
   href,
+  badge,
 }: LoanSummaryProps) {
   return (
-    <Link href={href}>
-      <div className="card shadow-xl active:scale-95 active:brightness-95 transition-all duration-200 cursor-pointer overflow-hidden">
-        <div className="bg-white p-4">
+    <Link href={href} className="block">
+      <div className="m-4 rounded-3xl bg-card-bg shadow-xl overflow-hidden active:scale-95 active:brightness-95 transition-all duration-200 cursor-pointer">
+        <div className="bg-base-100 p-6">
           <div className="flex justify-between items-center">
             <span className="text-base-content/80">{title}</span>
             {status && <span className="text-primary">{status}</span>}
@@ -35,14 +37,19 @@ export default function LoanSummaryCard({
           <p className="text-2xl font-bold text-right mt-2 text-base-content">
             {amount.toLocaleString()} 원
           </p>
-        </div>
+          {badge && (
+            <div className="flex justify-end mt-1">
+              <div className="badge badge-primary">
+                {`${((progressAmount / targetAmount) * 100).toFixed(2)}% ${badge}`}
+              </div>
+            </div>
+          )}
 
-        <div className="bg-card-bg p-4">
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between mt-4">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <p className="text-base-content/80 mb-1">{stat.label}</p>
-                <p className={`font-bold text-base-content ${stat.color || ''}`}>
+                <p className="text-base-content/80 mb-1 text-sm">{stat.label}</p>
+                <p className={`font-bold text-base-content text-xl ${stat.color || ''}`}>
                   {stat.value}
                 </p>
               </div>
@@ -51,7 +58,7 @@ export default function LoanSummaryCard({
 
           <div className="mt-4">
             <progress 
-              className="progress progress-success w-full" 
+              className="progress progress-primary w-full" 
               value={progressAmount} 
               max={targetAmount}
             />
