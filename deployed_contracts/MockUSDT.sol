@@ -17,4 +17,4 @@ contract MockUSDT is ERC20, Ownable {
 }
 
 
-// deployed on eth-sepolia, contract address: 0xec8A6aF08F2C2799dB3B27DF0b881beeAD34a1c7
+// deployed on eth-sepolia, contract address: 0xdDB7FD3D70bb4d99DdF65aCEdCCC743D68dEDB44

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { signup } from '@/api/auth/route';
+import { signup } from '@/app/api/auth/route';
 
 export default function SignupPage() {
   return (

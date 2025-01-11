@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { login } from '@/api/auth/route';
+import { login } from '@/app/api/auth/route';
 import { Passion_One } from 'next/font/google';
 
 const passionOne = Passion_One({
