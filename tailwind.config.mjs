@@ -25,6 +25,7 @@ export default {
           neutral: "#3d4451",
           "base-100": "#ffffff",
           "card-bg": "#F5F6F7",
+          "logoColor": "#093687",
         },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
@@ -34,6 +35,7 @@ export default {
           neutral: "#3d4451",
           "base-100": "#ffffff",
           "card-bg": "#F5F6F7",
+          "logoColor": "#093687",
         },
       },
     ],
