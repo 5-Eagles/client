@@ -15,7 +15,7 @@ export default function GreyHoverButton({
     <div
       onClick={onClick}
       className={`btn btn-ghost transition-all duration-200 
-        active:scale-95 hover:bg-gray-100 ${textColor} ${className}`}
+        active:scale-95 hover:bg-gray-100 ${textColor} ${className} rounded-full`}
     >
       {children}
     </div>

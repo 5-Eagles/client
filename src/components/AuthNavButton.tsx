@@ -21,7 +21,8 @@ export default function AuthNavButton({
     } = await supabase.auth.getSession();
     if (!session) {
       router.push('/login');
-      return;
+    } else {
+      router.push('/mypage');
     }
   };
 
