@@ -19,17 +19,15 @@ export default function AuthNavButton({
     const {
       data: { session },
     } = await supabase.auth.getSession();
-
-    if (session) {
-      router.push('/mypage');
-    } else {
+    if (!session) {
       router.push('/login');
+      return;
     }
   };
 
   return (
-    <button onClick={handleClick} className={className}>
+    <div onClick={handleClick} className={`cursor-pointer ${className}`}>
       {children}
-    </button>
+    </div>
   );
 }
