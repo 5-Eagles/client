@@ -11,7 +11,7 @@ export default function SignupPage() {
         <div className='text-center space-y-4'>
           <h1 className='text-4xl font-bold text-[#15357A]'>Sign Up</h1>
           <h2 className='text-2xl text-[#4285F4]'>
-            LendIT<span className='text-black'>에 가입하세요</span>
+            CrediX<span className='text-black'>에 가입하세요</span>
           </h2>
         </div>
 
