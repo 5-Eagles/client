@@ -6,9 +6,25 @@ export default function MyPage() {
       <h1 className="text-xl font-bold">내 계좌</h1>
       
       <LoanSummaryCard
+        title="위험등급C"
+        status="모집중"
+        amount={2000000}
+        badge="70.03% 달성"
+        stats={[
+          { label: "수익률", value: "10.9%", color: "text-primary" },
+          { label: "투자 기간", value: "12개월" },
+          { label: "모집률", value: "45.50%" }
+        ]}
+        progressAmount={1400600}  // 70.03% of 2000000
+        targetAmount={2000000}
+        href="/loan-details"  // 적절한 경로로 수정 필요
+      />
+      
+      <LoanSummaryCard
         title="빌린 돈"
         status="더보기"
         amount={43539446}
+
         stats={[
           { label: "상시런 상품", value: "10개", color: "text-primary" },
           { label: "모집중인 상품", value: "12개", color: "text-error" },
@@ -20,7 +36,7 @@ export default function MyPage() {
       />
 
       <LoanSummaryCard
-        title="받아준 돈"
+        title="빌려준 돈"
         status="더보기"
         amount={43539446}
         stats={[
