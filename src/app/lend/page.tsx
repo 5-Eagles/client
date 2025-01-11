@@ -10,10 +10,13 @@ import BoxButton from '@/components/button/boxButton';
 import { TbDiamond } from "react-icons/tb";
 import { useState } from 'react';
 import LoanFilter from './LoanFilter';
+import { IoSparklesOutline } from "react-icons/io5";
+import AiLoanModal from './aiLoan';
 
 export default function Lend() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
@@ -42,9 +45,13 @@ export default function Lend() {
                 <BadgeButton onClick={() => handleFilterClick('투자기간')}>
                     투자기간 <MdExpandMore className="w-4 h-4" />
                 </BadgeButton>
-                <BoxButton className="px-16">
-                    <TbDiamond className="w-4 h-4" /> AI 추천
-                </BoxButton>
+                <button 
+                    onClick={() => setIsAiModalOpen(true)}
+                    className="btn btn-primary"
+                >
+                    <IoSparklesOutline className="w-4 h-4 mr-1" />
+                    AI 추천
+                </button>
             </div>
 
             <LoanSummaryCard
@@ -66,6 +73,10 @@ export default function Lend() {
         <LoanFilter 
             isOpen={isFilterOpen} 
             onClose={() => setIsFilterOpen(false)} 
+        />
+        <AiLoanModal 
+            isOpen={isAiModalOpen}
+            onClose={() => setIsAiModalOpen(false)}
         />
         <BottomNav />
     </>

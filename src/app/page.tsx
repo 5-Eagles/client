@@ -5,6 +5,14 @@ import Image from 'next/image';
 import ServiceCard from '@/components/MainCard';
 import CardButton from '@/components/button/cardButton';
 import BottomNav from '@/components/BottomNav';
+import { Passion_One } from 'next/font/google';
+
+const passionOne = Passion_One({
+  weight: ['400', '700', '900'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 export default function Home() {
   const rankings = [
     { rank: 1, company: 'SK하이닉스', amount: 1000000, score: 48 },
@@ -52,12 +60,14 @@ export default function Home() {
   return (
     <>
       <div className='flex flex-col min-h-screen pb-20'>
-        <header className='p-4'>
-          <h1 className='text-2xl font-bold text-[#15357A]'>CrediX</h1>
+        <header className='ml-4'>
+          <h1 className={`text-5xl text-[#15357A] ${passionOne.className}`}>
+            CrediX
+          </h1>
         </header>
 
         <div className='p-4 space-y-8'>
-          <CardButton bgColor="bg-gray-100">
+          <CardButton bgColor='bg-gray-100'>
             <div className='flex justify-between items-center'>
               <span className='text-lg font-medium'>내 계좌</span>
               <Link href='/mypage' className='text-blue-500'>

@@ -14,15 +14,13 @@ export default function Borrow() {
           
         </div>
 
-        <div className="flex justify-between">
-          <div className="flex gap-2">
-            <GreyHoverButton className="text-sm">
-              모집 중
-            </GreyHoverButton>
-            <GreyHoverButton className="text-sm">
-              모집 완료
-            </GreyHoverButton>
-          </div>
+        <div className="flex gap-2">
+          <GreyHoverButton className="text-sm">
+            모집 중
+          </GreyHoverButton>
+          <GreyHoverButton className="text-sm">
+            모집 완료
+          </GreyHoverButton>
           <div className="flex gap-2">
             <GreyHoverButton>
               <GoSearch className="w-5 h-5" />
@@ -48,7 +46,7 @@ export default function Borrow() {
             href="/loan-details"
         />
 
-        <CardButton bgColor="bg-gray-100">
+        <CardButton bgColor="bg-gray-100" href="/new">
           <div className="flex flex-col items-center gap-1">
             <GoPlus className="w-6 h-6" />
             <span className="text-sm">빌리기</span>

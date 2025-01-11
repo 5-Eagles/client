@@ -3,6 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { login } from '@/api/auth/route';
+import { Passion_One } from 'next/font/google';
+
+const passionOne = Passion_One({
+  weight: ['400', '700', '900'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function LoginPage() {
   return (
@@ -10,8 +17,9 @@ export default function LoginPage() {
       <div className='w-full max-w-lg space-y-8 px-8'>
         <div className='text-center space-y-4'>
           <h1 className='text-4xl font-bold text-[#15357A]'>Log In</h1>
-          <h2 className='text-2xl text-[#4285F4]'>
-            CrediX<span className='text-black'>에 로그인하세요</span>
+          <h2 className={`text-5xl ${passionOne.className}`}>
+            <span className='text-[#4285F4]'>CrediX</span>
+            <span className='text-black'>에 로그인하세요</span>
           </h2>
         </div>
 

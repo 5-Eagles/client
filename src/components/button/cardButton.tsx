@@ -1,27 +1,24 @@
+import Link from 'next/link';
+
 interface CardButtonProps {
   children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
   bgColor?: string;
+  href: string;
+  className?: string;
 }
 
-const CardButton = ({
+const CardButton: React.FC<CardButtonProps> = ({
   children,
-  onClick,
+  bgColor = 'bg-white',
+  href,
   className = '',
-  bgColor = 'bg-base-100',
-}: CardButtonProps) => {
+}) => {
   return (
-    <div 
-      onClick={onClick}
-      className={`block w-full ${className}`}
-    >
-      <div className="m-4 rounded-3xl bg-card-bg shadow-center-xl overflow-hidden active:scale-95 active:brightness-95 transition-all duration-200 cursor-pointer">
-        <div className={`${bgColor} p-4`}>
-          {children}
-        </div>
+    <Link href={href}>
+      <div className={`w-full p-4 rounded-lg ${bgColor} ${className} transition-all duration-200 active:scale-95 hover:opacity-90`}>
+        {children}
       </div>
-    </div>
+    </Link>
   );
 };
 
