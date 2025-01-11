@@ -1,6 +1,6 @@
 'use client';
 
-import { signup } from './actions';
+import { signup } from '@/api/auth/route';
 
 export default function SignupPage() {
   return (

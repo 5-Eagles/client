@@ -1,6 +1,6 @@
 'use client';
 
-import { login } from './actions';
+import { login } from '@/api/auth/route';
 
 export default function LoginPage() {
   return (
