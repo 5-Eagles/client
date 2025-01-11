@@ -39,7 +39,9 @@ export default function LoanSummaryCard({
           </p>
           {badge && (
             <div className="flex justify-end mt-1">
-              <div className="badge badge-primary">{badge}</div>
+              <div className="badge badge-primary">
+                {`${((progressAmount / targetAmount) * 100).toFixed(2)}% ${badge}`}
+              </div>
             </div>
           )}
 
