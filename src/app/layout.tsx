@@ -22,16 +22,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang='en'
-      className={geistSans.className}
-      data-theme='light'
-      suppressHydrationWarning
-    >
+    <html lang='en' className={geistSans.className} suppressHydrationWarning>
       <body className='bg-background text-foreground'>
         <main className='min-h-screen flex flex-col items-center'>
-          <div className='mt-4'/>
-            {children}
+          {children}
         </main>
       </body>
     </html>
