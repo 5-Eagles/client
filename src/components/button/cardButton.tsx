@@ -2,24 +2,26 @@ interface CardButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
+  bgColor?: string;
 }
 
-const CardButton: React.FC<CardButtonProps> = ({
+const CardButton = ({
   children,
   onClick,
   className = '',
-}) => {
+  bgColor = 'bg-base-100',
+}: CardButtonProps) => {
   return (
-    <button
+    <div 
       onClick={onClick}
       className={`block w-full ${className}`}
     >
-      <div className="m-4 rounded-3xl bg-card-bg shadow-xl overflow-hidden active:scale-95 active:brightness-95 transition-all duration-200 cursor-pointer">
-        <div className="bg-base-100 p-6">
+      <div className="m-4 rounded-3xl bg-card-bg shadow-center-xl overflow-hidden active:scale-95 active:brightness-95 transition-all duration-200 cursor-pointer">
+        <div className={`${bgColor} p-4`}>
           {children}
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 

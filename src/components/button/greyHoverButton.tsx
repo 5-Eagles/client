@@ -15,7 +15,8 @@ const GreyHoverButton: React.FC<GreyHoverButtonProps> = ({
     <button
       onClick={onClick}
       className={`btn btn-ghost transition-all duration-200 
-        active:scale-95 rounded-full ${textColor} ${className}`}
+        active:scale-95 active:bg-gray-200 hover:bg-gray-100 
+        rounded-full ${textColor} ${className}`}
     >
       {children}
     </button>

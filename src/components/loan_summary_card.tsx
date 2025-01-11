@@ -28,33 +28,36 @@ export default function LoanSummaryCard({
 }: LoanSummaryProps) {
   return (
     <Link href={href}>
-      <CardButton>
-        <div className="flex justify-between items-center">
-          <span className="text-base-content/80">{title}</span>
-          {status && <span className="text-primary">{status}</span>}
-        </div>
-
-        <p className="text-2xl font-bold text-right mt-2 text-base-content">
-          {amount.toLocaleString()} 원
-        </p>
-        {badge && (
-          <div className="flex justify-end mt-1">
-            <div className="badge badge-primary">
-              {`${((progressAmount / targetAmount) * 100).toFixed(2)}% ${badge}`}
+      <CardButton bgColor='bg-gray-100'>
+        <div className='bg-base-100 p-4 rounded-2xl'>
+            <div className="flex justify-between items-center">
+            <span className="text-base-content/80">{title}</span>
+            {status && <span className="text-primary">{status}</span>}
             </div>
-          </div>
-        )}
 
-        <div className="flex justify-between mt-4">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <p className="text-base-content/80 mb-1 text-sm">{stat.label}</p>
-              <p className={`font-bold text-base-content text-xl ${stat.color || ''}`}>
-                {stat.value}
-              </p>
+            <p className="text-2xl font-bold text-right mt-2 text-base-content">
+            {amount.toLocaleString()} 원
+            </p>
+            {badge && (
+            <div className="flex justify-end mt-1">
+                <div className="badge badge-primary">
+                {`${((progressAmount / targetAmount) * 100).toFixed(2)}% ${badge}`}
+                </div>
             </div>
-          ))}
+            )}
+
+            <div className="flex justify-between mt-4">
+            {stats.map((stat, index) => (
+                <div key={index} className="text-center">
+                <p className="text-base-content/80 mb-1 text-sm">{stat.label}</p>
+                <p className={`font-bold text-base-content text-xl ${stat.color || ''}`}>
+                    {stat.value}
+                </p>
+                </div>
+            ))}
+            </div>
         </div>
+        
 
         <div className="mt-4">
           <progress 

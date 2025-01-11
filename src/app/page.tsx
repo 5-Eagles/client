@@ -3,8 +3,8 @@ import RankingItem from '@/components/RankingItem';
 import AuthNavButton from '@/components/AuthNavButton';
 import Image from 'next/image';
 import ServiceCard from '@/components/MainCard';
+import CardButton from '@/components/button/cardButton';
 import BottomNav from '@/components/BottomNav';
-
 export default function Home() {
   const rankings = [
     { rank: 1, company: 'SK하이닉스', amount: 1000000, score: 48 },
@@ -57,12 +57,14 @@ export default function Home() {
         </header>
 
         <div className='p-4 space-y-8'>
-          <div className='bg-gray-100 rounded-2xl p-4 flex justify-between items-center'>
-            <span className='text-lg font-medium'>내 계좌</span>
-            <Link href='/mypage' className='text-blue-500'>
-              전체보기
-            </Link>
-          </div>
+          <CardButton bgColor="bg-gray-100">
+            <div className='flex justify-between items-center'>
+              <span className='text-lg font-medium'>내 계좌</span>
+              <Link href='/mypage' className='text-blue-500'>
+                전체보기
+              </Link>
+            </div>
+          </CardButton>
 
           <div>
             <div className='flex justify-between items-center mb-4'>
@@ -90,6 +92,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      
       <BottomNav />
     </>
   );
