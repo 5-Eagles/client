@@ -1,8 +1,9 @@
 import LoanSummaryCard from '@/components/loan_summary_card';
 import AuthNavButton from '@/components/AuthNavButton';
 import BottomNav from '@/components/BottomNav';
-import { GoSearch, GoBell } from "react-icons/go";
+import { GoSearch, GoBell, GoPlus } from "react-icons/go";
 import GreyHoverButton from '@/components/button/greyHoverButton';
+import CardButton from '@/components/button/cardButton';
 
 export default function Borrow() {
   return (
@@ -46,6 +47,13 @@ export default function Borrow() {
             targetAmount={2000000}
             href="/loan-details"
         />
+
+        <CardButton bgColor="bg-gray-100">
+          <div className="flex flex-col items-center gap-1">
+            <GoPlus className="w-6 h-6" />
+            <span className="text-sm">빌리기</span>
+          </div>
+        </CardButton>
         </div>
         <BottomNav />
     </>
