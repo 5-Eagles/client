@@ -1,7 +1,8 @@
 import LoanSummaryCard from '@/components/loan_summary_card';
-
+import BottomNav from '@/components/BottomNav';
 export default function MyPage() {
   return (
+    <>
     <div className="w-full max-w-md mx-auto p-4 space-y-4">
       <h1 className="text-xl font-bold">내 계좌</h1>
       
@@ -49,6 +50,11 @@ export default function MyPage() {
         targetAmount={3000000}
         href="/lent"
       />
-    </div>
+       </div>
+      <BottomNav />
+    </>
+
+      
+   
   );
 }
