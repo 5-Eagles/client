@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
+import CryptoJS from 'crypto-js';
+import { ethers } from 'ethers';
 
 export async function signup(formData: FormData) {
   const supabase = await createClient();
@@ -30,10 +32,31 @@ export async function signup(formData: FormData) {
     );
   }
 
-  // Save additional user data
+  // AES 암호화 키 가져오기
+  const encryptionKey = process.env.AES_ENCRYPTION_KEY;
+  if (!encryptionKey) {
+    throw new Error(
+      'AES_ENCRYPTION_KEY is not defined in environment variables'
+    );
+  }
+
+  // Generate a new Ethereum wallet
+  const wallet = ethers.Wallet.createRandom();
+  const publicKey = wallet.address; // 공개 키
+  const privateKey = wallet.privateKey; // 비밀 키
+
+  // Encrypt the private key
+  const encryptedPrivateKey = CryptoJS.AES.encrypt(
+    privateKey,
+    encryptionKey
+  ).toString();
+
+  // Save user data, including wallet information
   const { error: dbError } = await supabase.from('users').insert({
     email,
     name,
+    wallet_address: publicKey,
+    wallet_private_key_encrypted: encryptedPrivateKey,
   });
 
   if (dbError) {
