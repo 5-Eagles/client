@@ -4,6 +4,7 @@ import BottomNav from '@/components/BottomNav';
 import { GoSearch, GoBell, GoPlus } from "react-icons/go";
 import GreyHoverButton from '@/components/button/greyHoverButton';
 import CardButton from '@/components/button/cardButton';
+import Link from 'next/link';
 
 export default function Borrow() {
   return (
@@ -46,12 +47,14 @@ export default function Borrow() {
             href="/loan-details"
         />
 
-        <CardButton bgColor="bg-gray-100" href="/new">
-          <div className="flex flex-col items-center gap-1">
-            <GoPlus className="w-6 h-6" />
-            <span className="text-sm">빌리기</span>
-          </div>
-        </CardButton>
+        
+          <CardButton bgColor="bg-gray-100">
+            <div className="flex flex-col items-center gap-1">
+              <GoPlus className="w-6 h-6" />
+              <span className="text-sm">빌리기</span>
+            </div>
+          </CardButton>
+        
         </div>
         <BottomNav />
     </>
