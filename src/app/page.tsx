@@ -14,6 +14,9 @@ export default async function Home() {
       <Link href='/profile'>Login user only profile page</Link>
       <br />
       <br />
+      <Link href='/mypage'>My page</Link>
+      <br />
+      <br />
     </div>
   );
 }
