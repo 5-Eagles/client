@@ -4,7 +4,7 @@ export default function MyPage() {
   return (
     <>
     <div className="w-full max-w-md mx-auto p-4 space-y-4">
-      <h1 className="text-xl font-bold">내 계좌</h1>
+      <h1 className="text-xl font-bold text-center">내 계좌</h1>
       
       <LoanSummaryCard
         title="위험등급C"

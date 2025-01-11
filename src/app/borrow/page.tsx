@@ -1,12 +1,13 @@
 import LoanSummaryCard from '@/components/loan_summary_card';
-import AuthNavButton from '@/components/AuthNavButton';
 import BottomNav from '@/components/BottomNav';
-
-export default function Lend() {
+import BoxButton from '@/components/button/boxButton';
+import GreyHoverButton from '@/components/button/greyHoverButton';
+import CardButton from '@/components/button/cardButton';
+export default function Borrow() {
   return (
     <>
         <div className="w-full max-w-md mx-auto p-4 space-y-4">
-        <h1 className="text-xl font-bold text-center">빌려주기</h1>
+        <h1 className="text-xl font-bold text-center">빌리기</h1>
 
         <LoanSummaryCard
             title="위험등급C"
@@ -22,6 +23,18 @@ export default function Lend() {
             targetAmount={2000000}
             href="/loan-details"
         />
+
+        <div className="flex gap-4 justify-center">
+          <BoxButton backgroundColor="bg-primary" textColor="text-white">
+            신청하기
+          </BoxButton>
+          <GreyHoverButton>
+            더 알아보기
+          </GreyHoverButton>
+          <CardButton>
+            <div className="flex flex-col items-center"></div>
+          </CardButton>
+        </div>
         </div>
         <BottomNav />
     </>
