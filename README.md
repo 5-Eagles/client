@@ -1,7 +1,7 @@
-# Service link
+# Credix Service link
 [`https://credix.vercel.app/`](https://credix.vercel.app/)
 
-# 블록체인 기반 P2P 대출 플랫폼
+# 블록체인 기반 P2P 대출 플랫폼, Credix
 
 ## 개요
 이 플랫폼은 블록체인 기술, 스마트 컨트랙트, AI를 활용하여 안전하고 효율적인 대출 서비스를 제공하는 탈중앙화 P2P 대출 서비스입니다. 이 시스템은 USDT(스테이블코인)를 거래 수단으로 사용하며, 이더리움 세폴리아 테스트넷 상에서 스마트 컨트랙트를 통해 자동화된 대출 관리를 구현합니다.
@@ -41,7 +41,7 @@
 
 ---
 
-# P2P Lending Platform with Blockchain Integration
+# P2P Lending Platform with Blockchain Integration, Credix
 
 ## Overview
 This platform is a decentralized P2P lending service that leverages blockchain technology, smart contracts, and AI to provide secure and efficient lending solutions. The system uses USDT (a stablecoin) for transactions and implements automated loan management through smart contracts on the Ethereum Sepolia testnet.
