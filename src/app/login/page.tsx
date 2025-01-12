@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { login } from '@/api/auth/route';
+import { useRouter } from 'next/navigation';
 import { Passion_One } from 'next/font/google';
 
 const passionOne = Passion_One({
@@ -12,6 +12,28 @@ const passionOne = Passion_One({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  async function handleSubmit(formData: FormData) {
+    // action 필드 추가
+    formData.append('action', 'login');
+
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      router.push('/');
+    } else {
+      router.push(
+        '/error?message=' + encodeURIComponent(data.error || 'Login failed')
+      );
+    }
+  }
+
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-white p-4'>
       <div className='w-full max-w-lg space-y-8 px-8'>
@@ -23,10 +45,11 @@ export default function LoginPage() {
           </h2>
         </div>
 
-        <form action={login} className='mt-12 space-y-8'>
+        <form action={handleSubmit} className='mt-12 space-y-8'>
           <div className='space-y-6'>
             <input
-              type='text'
+              type='email'
+              name='email'
               placeholder='Phone, email, or username'
               className='w-full px-6 py-4 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg
               text-black placeholder-gray-400'
@@ -35,6 +58,7 @@ export default function LoginPage() {
             <div className='relative'>
               <input
                 type='password'
+                name='password'
                 placeholder='Password'
                 className='w-full px-6 py-4 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg
                 text-black placeholder-gray-400'

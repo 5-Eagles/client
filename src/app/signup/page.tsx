@@ -2,10 +2,31 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { signup } from '@/api/auth/route';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
+  const router = useRouter();
+
+  async function handleSubmit(formData: FormData) {
+    // action 필드 추가
+    formData.append('action', 'signup');
+
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      router.push('/');
+    } else {
+      router.push(
+        '/error?message=' + encodeURIComponent(data.error || 'Signup failed')
+      );
+    }
+  }
+
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-white p-4'>
       <div className='w-full max-w-lg space-y-8 px-8'>
@@ -16,17 +37,8 @@ export default function SignupPage() {
           </h2>
         </div>
 
-        <form
-          action={async (formData: FormData) => {
-            const result = await signup(formData);
-            if (result.success) {
-              redirect('/');
-            } else if (result.error) {
-              redirect('/error?message=' + encodeURIComponent(result.error));
-            }
-          }}
-          className='mt-12 space-y-8'
-        >
+        <form action={handleSubmit} className='mt-12 space-y-8'>
+          {/* 나머지 폼 내용은 동일하게 유지 */}
           <div className='space-y-6'>
             <div>
               <input
@@ -65,6 +77,7 @@ export default function SignupPage() {
             </div>
           </div>
 
+          {/* 소셜 로그인 버튼들과 나머지 UI는 그대로 유지 */}
           <div className='relative text-center my-8'>
             <div className='absolute inset-0 flex items-center'>
               <div className='w-full border-t border-gray-300'></div>
