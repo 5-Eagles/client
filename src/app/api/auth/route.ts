@@ -9,16 +9,17 @@ import { ethers } from 'ethers';
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get('email') as string | null;
-  const password = formData.get('password') as string | null;
-  const name = formData.get('name') as string | null;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const name = formData.get('name') as string;
 
   // Input validation
   if (!email || !password || !name) {
     console.error('Missing required fields');
-    redirect('/error?message=Missing%20required%20fields');
+    return ('Missing required fields')
   }
 
+  try {
   // Sign up the user with email and password
   const { data: authResponse, error: authError } = await supabase.auth.signUp({
     email,
@@ -27,9 +28,7 @@ export async function signup(formData: FormData) {
 
   if (authError || !authResponse.user) {
     console.error('Sign-up error:', authError?.message);
-    redirect(
-      `/error?message=${encodeURIComponent(authError?.message || 'Sign-up failed')}`
-    );
+    return('Sign-up failed');
   }
 
   // AES 암호화 키 가져오기
@@ -61,10 +60,13 @@ export async function signup(formData: FormData) {
 
   if (dbError) {
     console.error('Database error:', dbError.message);
-    redirect(
-      `/error?message=${encodeURIComponent(dbError.message || 'Failed to save user data')}`
-    );
+    return { error: dbError.message };
   }
+    } catch (error) {
+    console.error('Error details:', error);
+    return { error: error.message };
+  }
+
 
   // Redirect to home after successful signup
   redirect('/');

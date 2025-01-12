@@ -41,7 +41,7 @@ export default function MyPage() {
     
       
       <LoanSummaryCard
-        title="빌린 돈"
+        title="빌리기"
         status="더보기"
         amount={43539446}
         badge="달성"
@@ -56,7 +56,7 @@ export default function MyPage() {
       />
 
       <LoanSummaryCard
-        title="빌려준 돈"
+        title="빌려주기"
         status="더보기"
         amount={43539446}
         badge="달성"

@@ -1,26 +1,23 @@
 interface GreyHoverButtonProps {
   children: React.ReactNode;
-  onClick?: () => void;
   className?: string;
   textColor?: string;
+  onClick?: () => void;
 }
 
-const GreyHoverButton: React.FC<GreyHoverButtonProps> = ({
+export default function GreyHoverButton({
   children,
-  onClick,
   className = '',
-  textColor = 'text-black',
-}) => {
+  textColor = '',
+  onClick,
+}: GreyHoverButtonProps) {
   return (
-    <button
+    <div
       onClick={onClick}
       className={`btn btn-ghost transition-all duration-200 
-        active:scale-95 active:bg-gray-200 hover:bg-gray-100 
-        rounded-full ${textColor} ${className}`}
+        active:scale-95 hover:bg-gray-100 ${textColor} ${className} rounded-full`}
     >
       {children}
-    </button>
+    </div>
   );
-};
-
-export default GreyHoverButton;
+}

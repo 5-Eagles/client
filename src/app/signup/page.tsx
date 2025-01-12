@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { signup } from '@/app/api/auth/route';
+import { redirect } from 'next/navigation';
 
 export default function SignupPage() {
   return (
@@ -15,7 +16,17 @@ export default function SignupPage() {
           </h2>
         </div>
 
-        <form action={signup} className='mt-12 space-y-8'>
+        <form
+          action={async (formData: FormData) => {
+            const result = await signup(formData);
+            if (result.success) {
+              redirect('/');
+            } else if (result.error) {
+              redirect('/error?message=' + encodeURIComponent(result.error));
+            }
+          }}
+          className='mt-12 space-y-8'
+        >
           <div className='space-y-6'>
             <div>
               <input
