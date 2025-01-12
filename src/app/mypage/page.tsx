@@ -3,6 +3,8 @@ import BottomNav from '@/components/BottomNav';
 import BadgeButton from '@/components/button/badgeButton';
 import CardButton from '@/components/button/cardButton';
 import Link from 'next/link';
+import TokenTransfer from '@/components/TokenTransfer';
+import WalletManager from '@/app/wallet/page';
 
 export default function MyPage() {
   return (
@@ -47,6 +49,8 @@ export default function MyPage() {
           targetAmount={440000}
           href='/lent'
         />
+        <TokenTransfer />
+        <WalletManager />
       </div>
       <BottomNav />
     </>
