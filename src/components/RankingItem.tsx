@@ -1,7 +1,8 @@
 interface RankingItemProps {
   rank: number;
   company: string;
-  amount: number;
+  amount: string;
+  status: string;
   score: number;
 }
 

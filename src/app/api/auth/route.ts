@@ -1,103 +1,117 @@
-'use server';
-
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import CryptoJS from 'crypto-js';
 import { ethers } from 'ethers';
 
-export async function signup(formData: FormData) {
+export async function POST(request: NextRequest) {
   const supabase = await createClient();
+  const formData = await request.formData();
+  const action = formData.get('action');
 
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const name = formData.get('name') as string;
+  if (action === 'signup') {
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const name = formData.get('name') as string;
 
-  // Input validation
-  if (!email || !password || !name) {
-    console.error('Missing required fields');
-    return ('Missing required fields')
-  }
+    // Input validation
+    if (!email || !password || !name) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
 
-  try {
-  // Sign up the user with email and password
-  const { data: authResponse, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+    try {
+      // Sign up the user with email and password
+      const { data: authResponse, error: authError } =
+        await supabase.auth.signUp({
+          email,
+          password,
+        });
 
-  if (authError || !authResponse.user) {
-    console.error('Sign-up error:', authError?.message);
-    return('Sign-up failed');
-  }
+      if (authError || !authResponse.user) {
+        return NextResponse.json(
+          { error: authError?.message || 'Sign-up failed' },
+          { status: 400 }
+        );
+      }
 
-  // AES 암호화 키 가져오기
-  const encryptionKey = process.env.AES_ENCRYPTION_KEY;
-  if (!encryptionKey) {
-    throw new Error(
-      'AES_ENCRYPTION_KEY is not defined in environment variables'
-    );
-  }
+      // AES 암호화 키 가져오기
+      const encryptionKey = process.env.AES_ENCRYPTION_KEY;
+      if (!encryptionKey) {
+        return NextResponse.json(
+          { error: 'Server configuration error' },
+          { status: 500 }
+        );
+      }
 
-  // Generate a new Ethereum wallet
-  const wallet = ethers.Wallet.createRandom();
-  const publicKey = wallet.address; // 공개 키
-  const privateKey = wallet.privateKey; // 비밀 키
+      // Generate a new Ethereum wallet
+      const wallet = ethers.Wallet.createRandom();
+      const publicKey = wallet.address;
+      const privateKey = wallet.privateKey;
 
-  // Encrypt the private key
-  const encryptedPrivateKey = CryptoJS.AES.encrypt(
-    privateKey,
-    encryptionKey
-  ).toString();
+      // Encrypt the private key
+      const encryptedPrivateKey = CryptoJS.AES.encrypt(
+        privateKey,
+        encryptionKey
+      ).toString();
 
-  // Save user data, including wallet information
-  const { error: dbError } = await supabase.from('users').insert({
-    email,
-    name,
-    wallet_address: publicKey,
-    wallet_private_key_encrypted: encryptedPrivateKey,
-  });
+      // Save user data, including wallet information
+      const { error: dbError } = await supabase.from('users').insert({
+        email,
+        name,
+        wallet_address: publicKey,
+        wallet_private_key_encrypted: encryptedPrivateKey,
+      });
 
-  if (dbError) {
-    console.error('Database error:', dbError.message);
-    return { error: dbError.message };
-  }
+      if (dbError) {
+        return NextResponse.json({ error: dbError.message }, { status: 500 });
+      }
+
+      return NextResponse.json(
+        { message: 'Signup successful', redirectTo: '/' },
+        { status: 201 }
+      );
     } catch (error) {
-    console.error('Error details:', error);
-    return { error: error.message };
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 
+  if (action === 'login') {
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
-  // Redirect to home after successful signup
-  redirect('/');
-}
+    // Input validation
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: 'Missing email or password' },
+        { status: 400 }
+      );
+    }
 
-export async function login(formData: FormData) {
-  const supabase = await createClient();
+    try {
+      // Log in the user
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-  const email = formData.get('email') as string | null;
-  const password = formData.get('password') as string | null;
+      if (loginError) {
+        return NextResponse.json(
+          { error: loginError.message || 'Login failed' },
+          { status: 401 }
+        );
+      }
 
-  // Input validation
-  if (!email || !password) {
-    console.error('Missing email or password');
-    redirect('/error?message=Missing%20email%20or%20password');
+      return NextResponse.json(
+        { message: 'Login successful', redirectTo: '/' },
+        { status: 200 }
+      );
+    } catch (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 
-  // Log in the user
-  const { error: loginError } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (loginError) {
-    console.error('Login error:', loginError.message);
-    redirect(
-      `/error?message=${encodeURIComponent(loginError.message || 'Login failed')}`
-    );
-  }
-
-  // Revalidate the cache and redirect
-  revalidatePath('/');
-  redirect('/');
+  return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 }

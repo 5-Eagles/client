@@ -23,18 +23,21 @@ const rankingData = [
     company: '퓨처파이낸스',
     amount: '42,000,000',
     status: '46/50',
+    score: 92,
   },
   {
     rank: 2,
     company: '디지털펀드',
     amount: '38,000,000',
     status: '32/50',
+    score: 64,
   },
   {
     rank: 3,
     company: '테크론캐피탈',
     amount: '35,000,000',
     status: '28/50',
+    score: 56,
   },
 ];
 
