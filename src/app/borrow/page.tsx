@@ -49,7 +49,7 @@ export default function Borrow() {
 
   return (
     <>
-      <h1 className='text-xl font-bold text-center'>빌리기</h1>
+      <h1 className='text-xl font-bold text-center'>대출받기</h1>
       <div className='w-full max-w-md mx-auto p-4 space-y-4'>
         <div className='flex justify-between'>
           <div className='flex gap-2'>
@@ -66,30 +66,40 @@ export default function Borrow() {
           </div>
         </div>
 
-        {loans.map((loan) => (
-          <LoanSummaryCard
-            key={loan.id}
-            title={`위험등급 ${loan.credit_grade}`}
-            status={loan.approval_status === 'Approved' ? '모집중' : '심사중'}
-            amount={loan.loan_amount}
-            badge='달성'
-            stats={[
-              {
-                label: '수익률',
-                value: `${loan.interest_rate.toFixed(2)}%`,
-                color: 'text-primary',
-              },
-              {
-                label: '투자 기간',
-                value: `${loan.term}개월`,
-              },
-              { label: '모집률', value: '45.50%' },
-            ]}
-            progressAmount={Math.floor(loan.loan_amount * 0.4)}
-            targetAmount={loan.loan_amount}
-            href={`/loan-details/${loan.id}`}
-          />
-        ))}
+        {loans.map((loan) => {
+          const randomProgress = Math.floor(Math.random() * 40) + 1;
+          const progressAmount = Math.floor(
+            loan.loan_amount * (randomProgress / 100)
+          );
+
+          return (
+            <LoanSummaryCard
+              key={loan.id}
+              title={`위험등급 ${loan.credit_grade}`}
+              status={loan.approval_status === 'Approved' ? '모집중' : '심사중'}
+              amount={loan.loan_amount}
+              badge='달성'
+              stats={[
+                {
+                  label: '수익률',
+                  value: `${loan.interest_rate.toFixed(2)}%`,
+                  color: 'text-primary',
+                },
+                {
+                  label: '투자 기간',
+                  value: `${loan.term}개월`,
+                },
+                {
+                  label: '모집률',
+                  value: `${randomProgress.toFixed(2)}%`,
+                },
+              ]}
+              progressAmount={progressAmount}
+              targetAmount={loan.loan_amount}
+              href={`/loan-details/${loan.id}`}
+            />
+          );
+        })}
 
         <Link href='/borrow/new'>
           <CardButton bgColor='bg-gray-100'>

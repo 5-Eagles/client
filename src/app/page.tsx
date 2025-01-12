@@ -9,6 +9,15 @@ import BottomNav from '@/components/BottomNav';
 import { Passion_One } from 'next/font/google';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChartLine, FaHandshake, FaShieldAlt } from 'react-icons/fa';
+import Button from '@/components/button/Button';
+
+export interface RankingItemProps {
+  rank: number;
+  company: string;
+  amount: string;
+  status: string;
+  score: number;
+}
 
 const passionOne = Passion_One({
   weight: ['400', '700', '900'],
@@ -21,20 +30,23 @@ const rankingData = [
   {
     rank: 1,
     company: '퓨처파이낸스',
-    amount: '42,000,000',
+    amount: 42000000,
     status: '46/50',
+    score: 85,
   },
   {
     rank: 2,
     company: '디지털펀드',
-    amount: '38,000,000',
+    amount: 38000000,
     status: '32/50',
+    score: 82,
   },
   {
     rank: 3,
     company: '테크론캐피탈',
-    amount: '35,000,000',
+    amount: 35000000,
     status: '28/50',
+    score: 78,
   },
 ];
 
@@ -47,11 +59,11 @@ export default function Home() {
       setCurrentRankings((prev) => {
         const newRankings = [...prev];
         const first = newRankings.shift();
-        newRankings.push(first);
-        return newRankings.map((item, index) => ({
-          ...item,
-          rank: index + 1,
-        }));
+        if (first) {
+          newRankings.push(first);
+          return newRankings;
+        }
+        return newRankings;
       });
     }, 2000);
 
@@ -168,7 +180,7 @@ export default function Home() {
               {/* 첫 번째 배너 */}
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className='bg-gradient-to-r from-blue-900 to-blue-800 p-6 rounded-2xl text-white flex items-center justify-between'
+                className='bg-[#093687] p-6 rounded-2xl text-white flex items-center justify-between'
               >
                 <div className='space-y-1'>
                   <h3 className='text-lg font-bold'>두나무 투자의 디딤돌</h3>
@@ -214,13 +226,11 @@ export default function Home() {
 
         {/* 신용평가 시작하기 버튼을 맨 아래로 이동 */}
         <div className='p-4 mt-auto'>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className='w-full bg-primary text-white py-4 rounded-xl font-bold shadow-lg shadow-primary/20'
-          >
-            신용평가 시작하기
-          </motion.button>
+          <Link href='/borrow/new'>
+            <Button size='lg' className='w-full'>
+              신용평가 시작하기
+            </Button>
+          </Link>
         </div>
       </main>
       <BottomNav />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowBack } from 'react-icons/io';
 import { useRouter } from 'next/navigation';
 import GreyHoverButton from '@/components/button/greyHoverButton';
 import BoxButton from '@/components/button/boxButton';
@@ -9,7 +9,7 @@ import BoxButton from '@/components/button/boxButton';
 export default function Withdraw() {
   const router = useRouter();
   const [amount, setAmount] = useState<string>('');
-  const conversionRate = 1; // 1:1 비율
+  const conversionRate = 1700; // 1:1 비율
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 숫자만 입력 가능하도록
@@ -20,67 +20,69 @@ export default function Withdraw() {
   const convertedAmount = amount ? parseInt(amount) * conversionRate : 0;
 
   return (
-    <div className="w-full max-w-md mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
+    <div className='w-full max-w-md mx-auto p-4'>
+      <div className='flex justify-between items-center mb-6'>
         <GreyHoverButton onClick={() => router.back()}>
-          <IoIosArrowBack className="w-6 h-6" />
+          <IoIosArrowBack className='w-6 h-6' />
         </GreyHoverButton>
-        <h1 className="text-xl font-bold absolute left-1/2 -translate-x-1/2">출금하기</h1>
-        <div className="w-10" />
+        <h1 className='text-xl font-bold absolute left-1/2 -translate-x-1/2'>
+          출금하기
+        </h1>
+        <div className='w-10' />
       </div>
 
-      <div className="space-y-6">
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text font-medium">채울 계좌</span>
+      <div className='space-y-6'>
+        <div className='form-control w-full'>
+          <label className='label'>
+            <span className='label-text font-medium'>채울 계좌</span>
           </label>
-          <select className="select select-bordered w-full">
+          <select className='select select-bordered w-full'>
             <option>신한은행 110-123-456789</option>
             {/* 추가 계좌 옵션들 */}
           </select>
         </div>
 
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text font-medium">출금할 머니</span>
+        <div className='form-control w-full'>
+          <label className='label'>
+            <span className='label-text font-medium'>출금할 머니</span>
           </label>
-          <div className="relative">
+          <div className='relative'>
             <input
-              type="text"
+              type='text'
               value={amount ? parseInt(amount).toLocaleString() : ''}
               onChange={handleAmountChange}
-              placeholder="0"
-              className="input input-bordered w-full pr-12"
+              placeholder='0'
+              className='input input-bordered w-full pr-12'
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+            <span className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-500'>
               원
             </span>
           </div>
         </div>
 
-        <div className="form-control w-full bg-gray-50 p-4 rounded-lg">
-          <label className="label">
-            <span className="label-text font-medium">실제 출금액</span>
+        <div className='form-control w-full bg-gray-50 p-4 rounded-lg'>
+          <label className='label'>
+            <span className='label-text font-medium'>실제 출금액</span>
           </label>
-          <div className="text-2xl font-bold text-primary">
+          <div className='text-2xl font-bold text-primary'>
             {convertedAmount.toLocaleString()} 원
           </div>
-          <p className="text-sm text-gray-500 mt-2">
-            전환 비율 1원 = {conversionRate}원
+          <p className='text-sm text-gray-500 mt-2'>
+            전환 비율 1USDT = {conversionRate}원
           </p>
         </div>
 
-        <div className="flex gap-4 mt-8">
-          <BoxButton 
-            className="flex-1"
-            backgroundColor="bg-gray-100"
-            textColor="text-black"
+        <div className='flex gap-4 mt-8'>
+          <BoxButton
+            className='flex-1'
+            backgroundColor='bg-gray-100'
+            textColor='text-black'
             onClick={() => router.back()}
           >
             취소하기
           </BoxButton>
-          <BoxButton 
-            className="flex-1"
+          <BoxButton
+            className='flex-1'
             onClick={() => {
               // 출금 처리 로직
               alert('출금이 완료되었습니다.');
