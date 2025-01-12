@@ -1,44 +1,84 @@
 'use client';
 
+import { useRouter, useParams } from 'next/navigation';
+import { useState, useRef, type RefObject } from 'react';
+import { getLoanById } from '@/data/loans';
 import TopNav from '@/components/TopNav';
 import LoanSummaryCard from '@/components/loan_summary_card';
 import BoxButton from '@/components/button/boxButton';
-import { useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
 
 export default function LendDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const id = params.id;
+  const purchaseAmountRef: RefObject<HTMLDivElement> = useRef(null);
 
-  const [insuranceOption, setInsuranceOption] = useState<'apply' | 'none'>(
-    'none'
-  );
+  const [insuranceOption, setInsuranceOption] = useState<'apply' | 'none'>('none');
   const [purchaseAmount, setPurchaseAmount] = useState('');
   const [purchasePrice, setPurchasePrice] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-  const handleInvest = () => {
-    router.push(`/lend/${id}/result`);
+  const PRICE_PER_UNIT = 1700;
+
+  const loanData = getLoanById(params.id);
+
+  // 유틸리티 함수들을 먼저 정의
+  const formatWithUnit = (value: string, unit: string) => {
+    if (!value) return '';
+    return `${Number(value).toLocaleString()} ${unit}`;
   };
+
+  const removeUnit = (value: string) => {
+    return value.replace(/[^0-9.]/g, '');
+  };
+
+  const convertPriceToAmount = (price: string) => {
+    const numPrice = Number(removeUnit(price));
+    return (numPrice / PRICE_PER_UNIT).toString();
+  };
+
+  const convertAmountToPrice = (amount: string) => {
+    const numAmount = Number(removeUnit(amount));
+    return (numAmount * PRICE_PER_UNIT).toString();
+  };
+
+  // 유효성 검사 변수를 유틸리티 함수 이후에 정의
+  const isValidPurchase = purchaseAmount !== '' && Number(removeUnit(purchaseAmount)) > 0;
+
+  // 이벤트 핸들러들
+  const handleInvest = () => {
+    if (!isValidPurchase) {
+      purchaseAmountRef.current?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    setShowModal(true);
+  };
+
+  const handleConfirmInvest = () => {
+    setShowModal(false);
+    router.push(`/lend/${params.id}/result?amount=${purchasePrice}`);
+  };
+
+  // 상환 금액 계산 함수 추가
+  const calculateMonthlyPayment = () => {
+    if (!purchasePrice || !loanData) return '0';
+    const months = parseInt(loanData.stats[1].value);
+    const price = Number(removeUnit(purchasePrice));
+    return Math.round(price / months).toString();
+  };
+
+  if (!loanData) {
+    return <div>존재하지 않는 대출 상품입니다.</div>;
+  }
 
   return (
     <div className='flex flex-col h-screen'>
       <TopNav left='back' title='투자하기' />
-
+      
       <div className='flex-1 overflow-y-auto px-4 pb-4'>
         <div className='mt-4'>
           <LoanSummaryCard
-            title='Sample Loan'
-            amount={1000000}
-            stats={[
-              { label: '연 수익률', value: '12.5%', color: 'text-primary' },
-              { label: '기간', value: '12개월' },
-              { label: '상환방식', value: '원리금균등' },
-            ]}
-            progressAmount={500000}
-            targetAmount={1000000}
+            {...loanData}
             href=''
-            badge='모집중'
           />
         </div>
 
@@ -93,16 +133,25 @@ export default function LendDetailPage() {
             <span className='font-bold'>2000 USDT</span>
           </div>
 
-          <div className='form-control'>
+          <div className='form-control w-full' ref={purchaseAmountRef}>
             <label className='label'>
               <span className='label-text'>구매 수량</span>
             </label>
             <input
               type='text'
-              className='input input-bordered'
-              placeholder='USDT'
-              value={purchaseAmount}
-              onChange={(e) => setPurchaseAmount(e.target.value)}
+              className={`input input-bordered w-full ${!isValidPurchase ? 'input-error' : ''}`}
+              placeholder='0 USDT'
+              value={formatWithUnit(purchaseAmount, 'USDT')}
+              onChange={(e) => {
+                const value = removeUnit(e.target.value);
+                if (value && !isNaN(Number(value))) {
+                  setPurchaseAmount(value);
+                  setPurchasePrice(convertAmountToPrice(value));
+                } else {
+                  setPurchaseAmount('');
+                  setPurchasePrice('');
+                }
+              }}
             />
           </div>
 
@@ -113,9 +162,18 @@ export default function LendDetailPage() {
             <input
               type='text'
               className='input input-bordered'
-              placeholder='원'
-              value={purchasePrice}
-              onChange={(e) => setPurchasePrice(e.target.value)}
+              placeholder='0 원'
+              value={formatWithUnit(purchasePrice, '원')}
+              onChange={(e) => {
+                const value = removeUnit(e.target.value);
+                if (value && !isNaN(Number(value))) {
+                  setPurchasePrice(value);
+                  setPurchaseAmount(convertPriceToAmount(value));
+                } else {
+                  setPurchasePrice('');
+                  setPurchaseAmount('');
+                }
+              }}
             />
           </div>
 
@@ -150,25 +208,42 @@ export default function LendDetailPage() {
           <div className='bg-base-200 p-4 rounded-lg'>
             <div className='flex justify-between mb-2'>
               <span>매달 상환 금액</span>
-              <span className='font-bold'>89,000원</span>
+              <span className='font-bold'>{formatWithUnit(calculateMonthlyPayment(), '원')}</span>
             </div>
             <div className='flex justify-between mb-2'>
               <span>수익률</span>
-              <span className='font-bold'>연 12.5%</span>
+              <span className='font-bold'>{loanData.stats[0].value}</span>
             </div>
             <div className='flex justify-between'>
               <span>투자 기간</span>
-              <span className='font-bold'>12개월</span>
+              <span className='font-bold'>{loanData.stats[1].value}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className='p-4 bg-white border-t'>
-        <BoxButton className='w-full' onClick={handleInvest}>
+        <BoxButton 
+          className={`w-full ${!isValidPurchase ? 'btn-disabled opacity-50 cursor-not-allowed' : ''}`}
+          onClick={handleInvest}
+          disabled={!isValidPurchase}
+        >
           투자하기
         </BoxButton>
       </div>
+
+      {showModal && (
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">투자 확인</h3>
+            <p className="py-4">구매 금액 {formatWithUnit(purchasePrice, '원')}을 정말로 투자하시겠습니까?</p>
+            <div className="modal-action">
+              <button className="btn btn-primary" onClick={handleConfirmInvest}>네</button>
+              <button className="btn" onClick={() => setShowModal(false)}>아니오</button>
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 }

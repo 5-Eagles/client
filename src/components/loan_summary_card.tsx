@@ -35,8 +35,8 @@ export default function LoanSummaryCard({
             {status && <span className="text-primary">{status}</span>}
             </div>
 
-            <p className="text-2xl font-bold text-right mt-2 text-base-content">
-            {amount.toLocaleString()} 원
+            <p className="text-2xl font-bold">
+            {amount?.toLocaleString('ko-KR')}원
             </p>
             {badge && (
             <div className="flex justify-end mt-1">
