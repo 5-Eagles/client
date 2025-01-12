@@ -139,6 +139,48 @@ export const LOAN_DATA = [
         progressAmount: 2376000,
         targetAmount: 4500000,
       },
+      {
+        id: 11,
+        title: '위험등급 B',
+        status: '모집중',
+        amount: 3800000,
+        badge: '모집 됨',
+        stats: [
+          { label: '수익률', value: '10.3%', color: 'text-primary' },
+          { label: '투자 기간', value: '18개월' },
+          { label: '모집률', value: '47.60%' },
+        ],
+        progressAmount: 1808800,
+        targetAmount: 3800000,
+      },
+      {
+        id: 12,
+        title: '위험등급 A',
+        status: '상환 진행 중',
+        amount: 5500000,
+        badge: '갚음',
+        stats: [
+          { label: '수익률', value: '9.1%', color: 'text-primary' },
+          { label: '투자 기간', value: '24개월' },
+          { label: '모집률', value: '100%' },
+        ],
+        progressAmount: 5300000,
+        targetAmount: 5500000,
+      },
+      {
+        id: 13,
+        title: '위험등급 C',
+        status: '상환 진행 중',
+        amount: 2800000,
+        badge: '갚음',
+        stats: [
+          { label: '수익률', value: '11.8%', color: 'text-primary' },
+          { label: '투자 기간', value: '12개월' },
+          { label: '모집률', value: '100%' },
+        ],
+        progressAmount: 1300000,
+        targetAmount: 2800000,
+      },
 ];
 
 export const getLoanById = (id: string | number) => {
