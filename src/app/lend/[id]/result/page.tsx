@@ -9,7 +9,7 @@ import { IoCheckmarkCircleOutline } from 'react-icons/io5';
 
 export default function LendResultPage() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams() as { id: string };
   const searchParams = useSearchParams();
   const loanData = getLoanById(params.id);
   

@@ -115,7 +115,13 @@ export default function Home() {
                   exit={{ y: -40 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <RankingItem {...currentRankings[0]} />
+                  <RankingItem {...{
+                    rank: currentRankings[0].rank,
+                    company: currentRankings[0].company,
+                    amount: currentRankings[0].amount.toString(),
+                    status: currentRankings[0].status,
+                    score: currentRankings[0].score
+                  }} />
                 </motion.div>
               </AnimatePresence>
             </div>

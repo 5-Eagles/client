@@ -10,6 +10,7 @@ import BoxButton from '@/components/button/boxButton';
 export default function LendDetailPage() {
   const router = useRouter();
   const params = useParams();
+  const loanId = params.id as string;
   const purchaseAmountRef: RefObject<HTMLDivElement> = useRef(null);
 
   const [insuranceOption, setInsuranceOption] = useState<'apply' | 'none'>('none');
@@ -19,7 +20,7 @@ export default function LendDetailPage() {
 
   const PRICE_PER_UNIT = 1700;
 
-  const loanData = getLoanById(params.id);
+  const loanData = getLoanById(loanId);
 
   // 유틸리티 함수들을 먼저 정의
   const formatWithUnit = (value: string, unit: string) => {
@@ -224,7 +225,7 @@ export default function LendDetailPage() {
 
       <div className='p-4 bg-white border-t'>
         <BoxButton 
-          className={`w-full ${!isValidPurchase ? 'btn-disabled opacity-50 cursor-not-allowed' : ''}`}
+          className={`w-full ${!isValidPurchase ? 'opacity-50 cursor-not-allowed' : ''}`}
           onClick={handleInvest}
           disabled={!isValidPurchase}
         >

@@ -1,9 +1,6 @@
-interface BoxButtonProps {
-  children: React.ReactNode;
+interface BoxButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   backgroundColor?: string;
   textColor?: string;
-  onClick?: () => void;
-  className?: string;
 }
 
 const BoxButton: React.FC<BoxButtonProps> = ({
@@ -12,11 +9,13 @@ const BoxButton: React.FC<BoxButtonProps> = ({
   textColor = 'text-white',
   onClick,
   className = '',
+  ...props
 }) => {
   return (
     <button
       onClick={onClick}
       className={`btn ${backgroundColor} ${textColor} transition-all duration-200 active:scale-95 hover:opacity-90 ${className}`}
+      {...props}
     >
       {children}
     </button>
